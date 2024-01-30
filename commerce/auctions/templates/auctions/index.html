@@ -5,13 +5,27 @@
     <ul>
         {% for listing in listings %}
             <li>
-                <h4>{{ listing.title }}</h4>
-                {% if listing.image_url %}
-                    <img class = "listing_img" src = "{{ listing.image_url }}" alt = "listing_img">
-                {% endif %}
-                ${{ listing.current_price }}  
-                {{ listing.description }}
+                <a class = "listing_link" href = "{% url 'listing' listing.id %}">
+                    <div class = "listing_container">
+                        {% if listing.image_url %}
+                            <img class = "listing_img" src = "{{ listing.image_url }}" alt = "listing_img">
+                        {% endif %}
+                        <div class = "text_div">
+                            <h5 class = "display_title">{{ listing.title }}</h5>                 
                         
+                            <div class = "display_price"> 
+                                ${{ listing.current_price }}  
+                            </div>
+
+                            <div class = "display_description">
+                                {{ listing.description }}
+                            </div>
+
+                        </div>
+                </a>
+
+                       
+                </div>                  
             </li>
 
         {% endfor %}

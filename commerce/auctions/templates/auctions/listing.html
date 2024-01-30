@@ -1,0 +1,15 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <h2>{{ listing.title }}</h2>
+    <p>Posted by <span style = "font-weight: bold;">{{ listing.user.username }}</span></p>
+    <img src = "{{ listing.image_url }}" alt = "listing_img">
+    <div class = "display_price"> 
+        ${{ listing.current_price }}  
+    </div>
+    <div class = "display_description">
+        {{ listing.description }}
+    </div>
+    
+
+{% endblock %}
