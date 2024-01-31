@@ -3,13 +3,24 @@
 {% block body %}
     <h2>{{ listing.title }}</h2>
     <p>Posted by <span style = "font-weight: bold;">{{ listing.user.username }}</span></p>
-    <img src = "{{ listing.image_url }}" alt = "listing_img">
-    <div class = "display_price"> 
-        ${{ listing.current_price }}  
-    </div>
+
+    {% if listing.image_url %}
+        <img src = "{{ listing.image_url }}" alt = "listing_img">
+    {% endif %}
+
     <div class = "display_description">
         {{ listing.description }}
     </div>
+    <div class = "display_price"> 
+        Current Bid: ${{ listing.current_price }}  
+    </div>
+
+    <form action = "{% url 'listing' listing.id %}" method = "POST">
+        {% csrf_token %} 
+        {{ bid_form.as_p }}
+        <input type = "submit" name = "submit_bid" value = "Place Bid">
+    </form>
+    
     
 
 {% endblock %}

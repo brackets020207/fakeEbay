@@ -26,3 +26,8 @@ class listing_form(forms.Form):
             }), 
             required=False)
     
+class bidding_form(forms.Form):
+    bid_price = forms.DecimalField(widget=forms.NumberInput(attrs= {
+            "name": "bid_price"
+            }), 
+            decimal_places=2)

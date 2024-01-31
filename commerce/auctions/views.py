@@ -4,7 +4,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
-from .forms import listing_form
+from .forms import listing_form, bidding_form
 
 from .models import User, Listing, Comment, Bid
 
@@ -85,6 +85,18 @@ def create_listing(request):
         })
 
 def view_listing(request, listing_id):
+    if request.method == "POST": 
+        if request.POST['submit_bid']:
+            cur_listing = Listing.objects.get(id = listing_id)
+            form_data = bidding_form(request.POST)
+            if form_data.is_valid():                    
+                if form_data.cleaned_data['bid_price'] > cur_listing.current_price:
+                    cur_listing.current_price = form_data.cleaned_data['bid_price']
+                    cur_listing.save()
+                    new_bid = Bid(price = form_data.cleaned_data['bid_price'], listing = cur_listing, user = request.user)
+                    new_bid.save()
+
     return render(request, "auctions/listing.html", {
-            "listing": Listing.objects.get(id = listing_id)
+            "listing": Listing.objects.get(id = listing_id),
+            "bid_form": bidding_form()
         })
