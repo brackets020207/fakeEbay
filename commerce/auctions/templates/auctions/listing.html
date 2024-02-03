@@ -14,13 +14,60 @@
     <div class = "display_price"> 
         Current Bid: ${{ listing.current_price }}  
     </div>
-
-    <form action = "{% url 'listing' listing.id %}" method = "POST">
-        {% csrf_token %} 
-        {{ bid_form.as_p }}
-        <input type = "submit" name = "submit_bid" value = "Place Bid">
+    <div>
+        {{ msg }}
+    </div>
+    {% if listing.active %}   
+        <form action = "{% url 'listing' listing.id %}" method = "POST">
+            {% csrf_token %} 
+            {{ bid_form.as_p }}
+            <input type = "submit" name = "submit_bid" value = "Place Bid">
+        </form>
+        
+        {% if listing.user == request.user %}
+        <form action = "{% url 'listing' listing.id %}" method = "POST">
+            {% csrf_token %} 
+            <input type = "submit" name = "close_listing" value = "Close Listing">
+        </form>
+        {% endif %}
+    {% else %}
+        {% if last_bid.user == request.user %}
+            <div>
+                You have won the bid.
+            </div>
+        {% elif last_bid == None %}
+            <div>
+                Bid closed without any bids. 
+            </div>
+        {% else %}
+            <div>
+                The listing is closed. The winner is {{ last_bid.user.username }}
+            </div>
+        {% endif %}
+        
+    {% endif %}
+    <h4>Comments</h4>
+    <form action = "{% url 'listing' listing.id %}" method = "POST"> 
+        {% csrf_token %}
+        {{ comm_form }}
+        <input type = "submit" name = "post_comment" value = "Comment">
     </form>
-    
-    
-
+    {% for comment in comments %}
+        <div class = "comment">
+            <div class = "comment_username"> 
+                {{ comment.user.username }}
+            </div>
+            <div class = "comment_time">
+                {{ comment.time }} 
+            </div>
+            <div class = "comment_text">
+                {{ comment.text }}
+            </div>
+            <hr>
+        </div> 
+    {% empty %}
+        <div>
+            No Comments
+        </div>
+    {% endfor %}
 {% endblock %}

@@ -70,3 +70,20 @@ textarea {
     text-decoration: none;
     color: black;
 }
+
+.comment_username {
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.comment_time {
+    font-weight: 300;
+    font-size: 12px;
+}
+
+.comment {
+    margin: 10px 20px;
+    border-bottom-style: bold;
+    border-bottom-width: 3px;
+
+}
