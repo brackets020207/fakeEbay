@@ -2,7 +2,7 @@ from django import forms
 
 valid_categories = {"ele":"Electronics", "vhr":"Vehicle Related", "hag":"Home and Garden", "csa":"Clothing, Shoes, and Accessories", 
                     "spt":"Sports", "hab":"Health and Beauty", "tah":"Toys and Hobbies", "bsi":"Business and Industrial", 
-                    "bmm":"Books Music and Movies", "caa":"Collectibles and Art", "bby":"Baby Essentials", "fd":"Food", "oth":"Other"}
+                    "bmm":"Books, Music, and Movies", "caa":"Collectibles and Art", "bby":"Baby Essentials", "fd":"Food", "oth":"Other"}
 
 class listing_form(forms.Form):
     title = forms.CharField(widget=forms.TextInput(attrs= {
@@ -37,5 +37,5 @@ class comment_form(forms.Form):
     text = forms.CharField(widget = forms.Textarea(attrs= {
             "name": "comment_text",
             "cols":120,
-            "rows":2
+            "rows":1
         }), label = '')

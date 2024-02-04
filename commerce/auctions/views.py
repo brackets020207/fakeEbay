@@ -11,6 +11,7 @@ from .models import User, Listing, Comment, Bid
 
 def index(request):
     return render(request, "auctions/index.html", {
+        "title": "Active Listings",
         "listings": Listing.objects.filter(active = True)})
 
 
@@ -88,6 +89,7 @@ def create_listing(request):
 
 def view_listing(request, listing_id):
     msg = ""
+    watchlisted = False
     cur_listing = Listing.objects.get(id = listing_id)
     Bids = Bid.objects.filter(listing = cur_listing)
     last_bid = Bids.order_by("-price").first()
@@ -101,8 +103,10 @@ def view_listing(request, listing_id):
                         cur_listing.current_price = form_data.cleaned_data['bid_price']
                         cur_listing.save()
                         new_bid = Bid(price = form_data.cleaned_data['bid_price'], listing = cur_listing, user = request.user)
+                        cur_listing.current_winner = request.user
+                        cur_listing.save()
                         new_bid.save()
-                        msg = "Bid Submitted"
+                        
                     else: 
                         msg = "Bid must be greater than current price"
             else :
@@ -111,6 +115,14 @@ def view_listing(request, listing_id):
         elif request.POST.get("close_listing"):
             cur_listing.active = False
             cur_listing.save()
+
+        elif request.POST.get("watchlist"):
+            cur_listing.watchlisters.add(request.user)
+            cur_listing.save()
+        
+        elif request.POST.get("unwatchlist"):
+            cur_listing.watchlisters.remove(request.user)
+            cur_listing.save()
         
         elif request.POST.get("post_comment"):
             if request.user.is_authenticated:                    
@@ -118,7 +130,10 @@ def view_listing(request, listing_id):
                 if form_data.is_valid():
                     new_comment = Comment(text = form_data.cleaned_data['text'], listing = cur_listing, user = request.user)
                     new_comment.save()
-        return HttpResponseRedirect(reverse("listing", args = (listing_id,)))
+        #return HttpResponseRedirect(reverse("listing", args = (listing_id,)))
+    
+    if request.user in cur_listing.watchlisters.all():
+        watchlisted = True;
                 
     return render(request, "auctions/listing.html", {
             "listing": Listing.objects.get(id = listing_id),
@@ -126,7 +141,9 @@ def view_listing(request, listing_id):
             "msg":msg,
             "last_bid": last_bid,
             "comm_form": comment_form(),
-            "comments": Comment.objects.filter(listing = cur_listing).order_by("-time")
+            "comments": Comment.objects.filter(listing = cur_listing).order_by("-time"),
+            "category": valid_categories.get(cur_listing.category),
+            "watchlisted": watchlisted
         })
 
 def category_menu(request):
@@ -135,7 +152,25 @@ def category_menu(request):
     })
 
 def view_category(request, category_cd):
-    return render(request, "auctions/category.html", {
-        "category": valid_categories[category_cd],
+    return render(request, "auctions/index.html", {
+        "title": valid_categories[category_cd],
         "listings": Listing.objects.filter(category = category_cd, active = True)
+    })
+
+def view_watchlist(request):
+    return render(request, "auctions/index.html", {
+        "title": "Your Watchlist",
+        "listings": request.user.watchlist.all()
+    })
+
+def view_won(request):
+    return render(request, "auctions/index.html", {
+        "title": "Bids Won",
+        "listings": Listing.objects.filter(active = False, current_winner = request.user)
+    })
+
+def view_listed(request):
+    return render(request, "auctions/index.html", {
+        "title": "My Listings",
+        "listings": Listing.objects.filter(user = request.user)
     })

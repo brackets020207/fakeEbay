@@ -66,9 +66,19 @@ textarea {
     text-decoration: none;
 }
 
+.listing_ttl {
+    height: 25px;
+}
+
 .listing_link:hover {
     text-decoration: none;
     color: black;
+}
+
+.error {
+    font-size: 14px;
+    font-weight: 350;
+    color: red;
 }
 
 .comment_username {
@@ -86,4 +96,15 @@ textarea {
     border-bottom-style: bold;
     border-bottom-width: 3px;
 
+}
+
+.tags {
+    display:block;
+    height: 16px;
+    margin: 3px 0px;
+    color: rgb(231, 231, 231);
+}
+
+.closed_msg {
+    font-size: 28px;
 }

@@ -13,6 +13,8 @@ class Listing(models.Model):
     image_url = models.CharField(max_length = 500, blank=True)
     user = models.ForeignKey(User, on_delete = models.CASCADE, related_name="listings")
     active = models.BooleanField(default=True)
+    current_winner = models.ForeignKey(User, on_delete = models.CASCADE, related_name="listings_won", null = True)
+    watchlisters = models.ManyToManyField(User, blank=True, related_name="watchlist")
 
 
 class Bid(models.Model):
@@ -23,5 +25,5 @@ class Bid(models.Model):
 class Comment(models.Model):
     listing = models.ForeignKey(Listing, on_delete=models.CASCADE, related_name= 'comments')
     text = models.TextField()
-    user = models.ForeignKey(User, on_delete = models.CASCADE, related_name='comments')
+    user = models.ForeignKey(User, on_delete = models.CASCADE, related_name='comments', null = True)
     time = models.DateTimeField(auto_now=False, auto_now_add=True)
