@@ -25,13 +25,21 @@
     <div class = "display_description">
         {{ listing.description }}
     </div>
-    <div class = "display_price"> 
-        Current Bid: ${{ listing.current_price }}  
-    </div>
-    <div class = "error">
-        {{ msg }}
-    </div>
+    
     {% if listing.active %}   
+        {% if listing.current_winner == None %}
+            <div class = "display_price"> 
+                Starting Bid: ${{ listing.current_price }}
+            </div>
+        {% else %}
+            <div class = "display_price"> 
+                Current Price: ${{ listing.current_price }}, bid by <b>{{ listing.current_winner }}</b>
+            </div>
+        {% endif %}
+        <div class = "error">
+            {{ msg }}
+        </div>
+    
         <form action = "{% url 'listing' listing.id %}" method = "POST">
             {% csrf_token %} 
             {{ bid_form.as_p }}
@@ -58,7 +66,7 @@
             </div>
         {% else %}
             <div class = "closed_msg">
-                The listing is closed. The winner is {{ last_bid.user.username }}
+                The listing is closed. The winner is {{ last_bid.user.username }} with a bid of ${{ listing.current_price }}
             </div>
         {% endif %}
         <hr>
